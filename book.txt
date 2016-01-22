@@ -3,3 +3,13 @@ It continues here.
 And here.
 And also here.
 This is the last line of book.txt.
+
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   book.txt
+

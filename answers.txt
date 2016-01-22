@@ -1,0 +1,17 @@
+a.) 2 commits.
+
+b.) Aug 24, 2015 12:19 PM EDT
+
+c.) There are no files that were committed before 8/21/15 at 11 PM
+
+d.) HardwoodSellerC.cpp - 1 time
+	WoodItem.cpp - 1 time
+	WoodItem.h - 1 time
+
+e.) Git status displays your current branch and changes that require a commit from your local repository while Git log displays the author and date of a file's commit along with the corresponding commit message and id on the git hub repository.
+
+f.) from command line: gitk main.java
+
+g.) git log --grep=<Regular Expression>
+
+h.) git log --author=<Name>
