@@ -1,0 +1,5 @@
+	This is a paragraph that is being added to the file.
+It continues here.
+And here.
+And also here.
+This is the last line of book.txt.
