@@ -14,4 +14,4 @@ f.) from command line: gitk main.java
 
 g.) git log --grep=<Regular Expression>
 
-h.) git log --author=<Name>
+h.) git log --author=<Name> --after="01/05/2016" --before="02/16/2016"

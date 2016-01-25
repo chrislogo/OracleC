@@ -1,0 +1,6 @@
+Cherry:5.95:2.5
+Curly Maple:6.0:1.5
+Genuine Mahogany:9.6:3
+Wenge:22.35:5
+White Oak:6.7:2.3
+Sawdust:1.5:1.0
