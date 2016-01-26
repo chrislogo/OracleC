@@ -48,10 +48,10 @@ int main()
 	string text;                               // hold information yet to be parsed
     int order = 0;                             // keeps track of num items ordere
     int j = 0;                                 // index for totals
-    double totals[NUM_INVENTORY];                 // storage to later sum totals
+    double totals[NUM_INVENTORY];              // storage to later sum totals
 	WoodItem inventory[NUM_INVENTORY];         // ds to hold inventory info         
     string ordered_wood[NUM_INVENTORY];        // assumed max size can only be max inventory size in largest case
-    double ordered_quantity[NUM_INVENTORY];       // ""
+    double ordered_quantity[NUM_INVENTORY];    // ""
     double total_price = 0.0;                  // total price of cust order
     int keep_going = 1;                        // control for gathering all items ordered by cust
     double del_eta = 0.0;                      // estimated delivery time
@@ -69,7 +69,7 @@ int main()
         eta_arr[i] = 0;
     }
 
-    // promt user for a file to check customer info
+    // prompt user for a file to check customer info
 	cout << "Enter the file of the order you would like to view: ";
 	cin >> file_name;
 	cout << endl << endl;
@@ -84,7 +84,8 @@ int main()
     cout << "Name: " << cust << endl 
          << "Address: " << addr << endl
          << "Order Creation Date: " << date << endl
-         << "Items: Wood Ordered\t\tPrice" << endl;
+         << "Items:\tWood Ordered\t\t      Price" << endl
+         << "------------------------------------------------" << endl;
 
     // obtain wood ordered
     // calculate individual wood totals
@@ -92,12 +93,13 @@ int main()
     while(keep_going)
     {
         keep_going = Split_Order(text, ordered_wood[order], ordered_quantity[order]);
-        cout << "\t" << setw(10)  << ordered_wood[order] << "  x   " << ordered_quantity[order] << "  =  $";
+        cout << "   " << setw(15)  << ordered_wood[order] << " ";
 
         for(int i = 0; i < NUM_INVENTORY; i++)
         {
             if(inventory[i].type == ordered_wood[order])
             {
+                cout << setw(6) << inventory[i].price;
                 totals[j] = inventory[i].price * ordered_quantity[order];
                 eta_arr[j] = deliveryTime(inventory[i].baseDeliveryTime, ordered_quantity[order]);
                 j++;
@@ -105,14 +107,14 @@ int main()
             }
         }
 
-        cout << totals[j-1] << endl;
+        cout << "  x  " << ordered_quantity[order] << "  =  $" << totals[j-1] << endl;
         order++;
     }
 
     // calc total price of order
     total_price = Calc_Total(totals, NUM_INVENTORY);
 
-    // find the max eta, that's how long the order will take
+    // find the max eta, that's how long the order will take (in hours)
     for(int i = 0; i < NUM_INVENTORY; i++)
     {
         if(eta_arr[i] > max)
@@ -121,7 +123,7 @@ int main()
 
     del_eta = max;
 
-	cout << "-------------------------------------" << endl
+	cout << "------------------------------------------------" << endl
 		 << "Estimated Delivery Time: " << del_eta << " hours" << endl
 		 << "Total Price: $" << total_price << endl
 		 << endl;
@@ -130,7 +132,7 @@ int main()
 }
 
 
-// Loads inventory into array
+// Loads inventory from file into array
 // based on number of items in inventory
 void Load_Inventory(WoodItem inventory[])
 {
@@ -156,6 +158,7 @@ void Load_Inventory(WoodItem inventory[])
 
     inv_file.read(buffer, size);
 
+    // copy to string
     string s(buffer);
 
     delete[] buffer;
@@ -196,7 +199,6 @@ string readInputFile(string inputFilePath)
 
     ledger.seekg(0,ledger.end);
 
-
     size = ledger.tellg();
 
     ledger.seekg(0, ledger.beg);
@@ -220,13 +222,12 @@ string readInputFile(string inputFilePath)
 void Split_Cust_Info(string &text, string &cust, string &addr, string &date)
 {
     size_t first_semi = 0;  
-    string temp;
     char name[100];             // assuming name, addr, and date wont be longer
     char address[100];          // than 100 chars
-    char shippment[100];
+    char shipment[100];
 
 
-	sscanf(text.c_str(), "%[^;];%[^;];%[^\n]\n", name, address, shippment);
+	sscanf(text.c_str(), "%[^;];%[^;];%[^\n]\n", name, address, shipment);
 
 	// copy over read in values to strings to display customer info.
 	string name_holder(name);
@@ -235,8 +236,8 @@ void Split_Cust_Info(string &text, string &cust, string &addr, string &date)
 	string address_holder(address);
 	addr = address_holder;
 
-	string shippment_holder(shippment);
-	date = shippment_holder;
+	string shipment_holder(shipment);
+	date = shipment_holder;
 
 	//skip the length of the cust name,
 	//address, and date plus the delimiters
@@ -267,6 +268,12 @@ int Split_Order(string &text, string &ordered_wood, double &ordered_quantity)
 
     text = text.substr(first_semi+1, string::npos - first_semi);
 
+    // lets the program know if there are any orders left to parse
+    // if not it will either be an empty string or a string that
+    // contains a newline so it is assumed the length would be 
+    // absolutely < 2 in those cases and otherwise the orders
+    // should be entered in precisely on the text file and will 
+    // obviously be > 2 characters in length
     if(text.length() < 2)
         return 0;
     else
@@ -279,6 +286,9 @@ int Split_Order(string &text, string &ordered_wood, double &ordered_quantity)
 double deliveryTime(double base_time, double total_ordered) 
 {
 	double deliveryETA = 0.0;
+
+    // Uses comparisons to figure out what the delivery time 
+    // multiplier should be
 
     if(total_ordered == 0)
         deliveryETA = 0.0;
@@ -299,7 +309,9 @@ double deliveryTime(double base_time, double total_ordered)
 }
 
 
-//compute total price
+// compute total price
+// sums the total the cust ordered
+// anything from inventory not ordered for the cust will be 0
 double Calc_Total(double totals[], int NUM_INVENTORY)
 {
     double sum = 0.0;
